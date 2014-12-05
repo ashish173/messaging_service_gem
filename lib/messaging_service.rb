@@ -15,16 +15,17 @@ module MessagingService
     @options
   end
 
-  def self.configure(&blk)
+  def self.configure # (&blk) pass code block in params from the main app
     # Messaging service config is new OpenStruct object
     # use this to dynamically get configurations for the gem
     # @options = MessagingService::Config.new 
     # yield gives a call to 
     # yield(@options)
-    yield config  # remove this when we get config from main app
+    #yield config  # remove this when we get config from main app
+    #
 
-    @connection = Faraday.new(:url => @options.url) do |builder|
-      builder.use Faraday::Response::Logger, @options.logger || :logger
+    @connection = Faraday.new(:url => 'http://localhost:3001') do |builder|
+      #builder.use Faraday::Response::Logger, @options.logger || :logger
       builder.use Faraday::Adapter::Excon
       builder.use FaradayMiddleware::ParseJson #cool for parsing response bodies
     end
@@ -45,5 +46,5 @@ module MessagingService
   # Otherwise the features in file won't work.
   # messaging_service.rb is the main point of gem start.
   require 'messaging_service/base_client'   # common code fr gem setup/all inherit this
-  
+  require 'messaging_service/message' 
 end
